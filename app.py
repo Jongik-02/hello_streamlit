@@ -1,4 +1,12 @@
 import streamlit as st
+import subprocess
+import sys
+
+# matplotlib 설치 여부 확인 및 설치
+try:
+    import matplotlib
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib"])
 import pandas as pd
 import matplotlib.pyplot as plt
 
