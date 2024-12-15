@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-python -m pip install -U matplotlib
 import matplotlib.pyplot as plt
 
 claim_df = pd.read_csv('claim.csv')
