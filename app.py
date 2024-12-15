@@ -69,3 +69,50 @@ elif analysis_type == "Contract Analysis":
     st.table(high_loss_contracts)
 
 st.sidebar.info("Use the dropdown above to explore different analyses.")
+
+st.title("Advanced Insurance Data Analysis Dashboard")
+st.sidebar.header("Select Additional Analysis")
+
+# Sidebar 선택
+analysis_type = st.sidebar.selectbox(
+    "Choose the analysis you want to perform:",
+    ["Regional Distribution", "Accident Type Claims", "Product Summary", "Housewife Claims Analysis"]
+)
+
+if analysis_type == "Regional Distribution":
+    st.header("Customer Region Distribution")
+    region_counts = cust_df['CTPR'].value_counts()
+    st.bar_chart(region_counts)
+    st.write("Distribution of customers across different regions.")
+
+elif analysis_type == "Accident Type Claims":
+    st.header("Accident Type Claims")
+    accident_claims = claim_df.groupby('ACCI_DVSN')['DMND_AMT'].sum().reset_index()
+    accident_claims.columns = ['Accident Type', 'Total Claim Amount']
+    st.bar_chart(accident_claims.set_index('Accident Type'))
+    st.write("Total claim amounts for each type of accident.")
+
+elif analysis_type == "Product Summary":
+    st.header("Insurance Product Summary")
+    product_summary = cntt_df.groupby('GOOD_CLSF_CDNM').agg({
+        'SUM_ORIG_PREM': ['sum', 'mean'],
+        'MAIN_INSR_AMT': ['sum', 'mean']
+    }).reset_index()
+    product_summary.columns = ['Product Type', 'Total Premium', 'Average Premium', 
+                               'Total Insurance Amount', 'Average Insurance Amount']
+    st.dataframe(product_summary)
+    st.write("Summary of premiums and insurance amounts for different product types.")
+
+elif analysis_type == "Housewife Claims Analysis":
+    st.header("Housewife Claims Analysis")
+    housewife_claims = cust_df[cust_df['OCCP_GRP_2'] == '주부']['CUST_ID']
+    housewife_claim_data = claim_df[claim_df['CUST_ID'].isin(housewife_claims)]
+    housewife_total_claims = housewife_claim_data['DMND_AMT'].sum()
+    total_claims = claim_df['DMND_AMT'].sum()
+    housewife_claim_percentage = (housewife_total_claims / total_claims) * 100
+
+    st.write(f"Total Claims by Housewives: {housewife_total_claims:,}")
+    st.write(f"Total Claims: {total_claims:,}")
+    st.write(f"Percentage of Claims by Housewives: {housewife_claim_percentage:.2f}%")
+
+st.sidebar.info("Use the dropdown above to explore different analyses.")
